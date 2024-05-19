@@ -6,6 +6,7 @@ import co.edu.uniquindio.uniEventos.servicios.UniEventos;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ControladorPrincipal implements UniEventos {
     @Override
@@ -54,7 +55,7 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public ArrayList<Evento> filtrarEventos() throws Exception {
+    public List<Evento> filtrarEventos(String nombre, TipoEvento tipoEvento, String ciudad) throws Exception {
         return null;
     }
 
@@ -65,11 +66,6 @@ public class ControladorPrincipal implements UniEventos {
 
     @Override
     public boolean crearCupon(float porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean enviarCuponPrimeraCompra(String email) throws Exception {
         return false;
     }
 
@@ -149,7 +145,7 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public void notificarCreacionCupon(Cupon cupon) throws Exception {
+    public void enviarEmail(Usuario usuario, String mensaje, String asunto) throws Exception {
 
     }
 

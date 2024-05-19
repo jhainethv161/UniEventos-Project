@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEventos {
     private final ArrayList<Compra> compras;
@@ -152,6 +153,8 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     public boolean modificarEvento(String codigo, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
         try {
             Evento evento = buscarEventoCodigo(codigo);
+            ArrayList<Compra> comprasEvento = obtenerComprasEvento(evento);
+
             if (evento == null) {
                 throw new Exception("El evento con el código proporcionado no existe.");
             }
@@ -166,6 +169,14 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
             evento.setFecha(fecha);
             evento.setDireccion(direccion);
             evento.setLocalidades(localidades);
+
+            String mensaje = "Se ha modificado en evento que has comprado, los nuevos datos son: \n \n" + evento.toString();
+
+            for (Compra compra : comprasEvento){
+                Usuario usuario = compra.getUsuario();
+                enviarEmail(usuario, mensaje, "Modificaion evento");
+            }
+
 
             return true;
         } catch (Exception e) {
@@ -190,15 +201,49 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
     @Override
-    public ArrayList<Evento> filtrarEventos() throws Exception {
-        return null;
+    public List<Evento> filtrarEventos(String nombre, TipoEvento tipoEvento, String ciudad) {
+        return eventos.stream()
+                .filter(evento -> (nombre == null || evento.getNombre().equalsIgnoreCase(nombre)) &&
+                        (tipoEvento == null || evento.getTipoEvento() == tipoEvento) &&
+                        (ciudad == null || evento.getCiudad().equalsIgnoreCase(ciudad)))
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean eliminarEvento(String codigo) throws Exception {
-        return false;
+        Evento eventoEliminar = null;
+        for (Evento evento:eventos){
+            if (evento.getCodigo().equals(codigo)){
+                    eventoEliminar = evento;
+            }
+        }
+
+        ArrayList<Compra>  comprasEvento = obtenerComprasEvento(eventoEliminar);
+        String mensaje = "El evento " + eventoEliminar.getNombre() + " a sido cancelado, lamentamos informate esto. En los proximos dias recibiras tu reembolso";
+
+        if (eventoEliminar != null && comprasEvento != null && !comprasEvento.isEmpty()){
+            for (Compra compra: comprasEvento){
+                enviarEmail(compra.getUsuario(), mensaje, "Evento cancelado");
+            }
+            eventos.remove(eventoEliminar);
+            return  true;
+        }
+
+
+        return  false;
     }
 
+
+    public ArrayList<Compra> obtenerComprasEvento(Evento evento){
+        ArrayList<Compra> comprasEvento = new ArrayList<>();
+        for(Compra compra: compras){
+            if (compra.getEvento().equals(evento)){
+                comprasEvento.add(compra);
+            }
+        }
+        return comprasEvento;
+
+    }
     @Override
     public boolean crearCupon(float porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
         validarDatosCupon(porcentajeDescuento, fechaInicio, fechaFin);
@@ -211,14 +256,16 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
                 .fechaFin(fechaFin)
                 .build();
 
-        notificarCreacionCupon(cupon);
-        cupones.add(cupon);
-        return true;
-    }
+        String mensaje = "¡Se ha creado un nuevo cupón que podrás utilizar!\n" +
+                "Vigencia: desde " + cupon.getFechaInicio() + " hasta " + cupon.getFechaFin() + "\n" +
+                "Código cupón: " + cupon.getCodigo();
 
-    @Override
-    public boolean enviarCuponPrimeraCompra(String email) throws Exception {
-        return false;
+        cupones.add(cupon);
+        for (Usuario usuario: usuarios){
+            enviarEmail(usuario, mensaje, "Nuevo cupon disponible");
+        }
+
+        return true;
     }
 
     @Override
@@ -228,6 +275,7 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
         Evento evento = buscarEventoCodigo(codigoEvento);
         Localidad localidadEvento = obtenerLocalidad(evento, localidad);
         Cupon cupon = null;
+
         if (codigoCupon != null && !codigoCupon.isBlank()){
             cupon = validarYBuscarCupon(codigoCupon, usuario);
         }
@@ -235,24 +283,44 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
         Compra compra = Compra.builder()
                 .cantidadEntradas(cantidadEntradas)
                 .cupon(cupon)
+                .usuario(usuario)
                 .evento(evento)
                 .localidad(localidadEvento)
                 .build();
 
         Factura factura = generarFactura(compra);
         compra.setFactura(factura);
+        enviarEmail(usuario, compra.toString(), "Compra realizada con exito");
+        esPrimeraCompra(usuario);
         compras.add(compra);
 
         return null;
     }
 
+
+    private boolean esPrimeraCompra(Usuario usuario) {
+        for (Compra compra : compras) {
+            if (compra.getUsuario().getCedula().equals(usuario.getCedula())) {
+                return false;
+            }
+        }
+
+        String codigoCupon = "PRIMERA_COMPRA";
+
+        String mensaje = "¡Felicitaciones por tu primera compra en UniEventos!\n" +
+                "Como agradecimiento, te ofrecemos un cupón de descuento del 10% en tu próxima compra.\n" +
+                "Código del cupón: " + codigoCupon + "\n";
+        enviarEmail(usuario, mensaje, "Cupón de Descuento por Primera Compra");
+        return true;
+    }
+
     @Override
     public void comprobarCapacidadLocalidad(Localidad localidad, int cantidadEntradas) throws Exception {
-        if (localidad.getCapacidadMaxima() <= cantidadEntradas) {
+        if ((localidad.getCapacidadMaxima() - localidad.getEntradasVendidas()) <= cantidadEntradas) {
             throw new Exception("Lo sentimos, no se encuentra disponible la cantidad requerida en esta localidad");
         }
-        int nuevaCapacidad = localidad.getCapacidadMaxima() - cantidadEntradas;
-        localidad.setCapacidadMaxima(nuevaCapacidad);
+        int entradasVendidas = localidad.getEntradasVendidas() + cantidadEntradas;
+        localidad.setEntradasVendidas(entradasVendidas);
     }
 
     @Override
@@ -267,11 +335,31 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
 
     @Override
     public boolean cancelarCompra(String codigoFactura) throws Exception {
-        return false;
+        Compra compra = obtenerCompra(codigoFactura);
+
+        if (compra == null) {
+            throw new Exception("No se encontró la compra con el código de factura proporcionado.");
+        }
+
+        Localidad localidad = compra.getLocalidad();
+        int cantidadEntradas = compra.getCantidadEntradas();
+        localidad.setEntradasVendidas(localidad.getEntradasVendidas() - cantidadEntradas);
+
+        compras.remove(compra);
+
+        String mensaje = "Su compra con el código de factura " + codigoFactura + " ha sido cancelada. Se han devuelto " + cantidadEntradas + " entradas. Proximamanete recibira su reembolso";
+        enviarEmail(compra.getUsuario(), mensaje, "Compra Cancelada");
+
+        return true;
     }
 
     @Override
     public Compra obtenerCompra(String codigoFactura) throws Exception {
+        for (Compra compra : compras) {
+            if (compra.getFactura().getCodigo().equals(codigoFactura)) {
+                return compra;
+            }
+        }
         return null;
     }
 
@@ -293,8 +381,26 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
     @Override
-    public EstadisticasEvento obtenerEstadisticasEvento(String eventoId) throws Exception {
-        return null;
+    public EstadisticasEvento obtenerEstadisticasEvento(String codigoEvento) throws Exception {
+        Evento evento = buscarEventoCodigo(codigoEvento);
+        if (evento == null) {
+            throw new Exception("El evento con el código proporcionado no existe.");
+        }
+
+        float totalGanado = 0;
+
+        EstadisticasEvento estadisticasEvento = new EstadisticasEvento();
+        for (Localidad localidad : evento.getLocalidades()) {
+            int capacidadMaxima = localidad.getCapacidadMaxima();
+            int entradasVendidas = localidad.getEntradasVendidas();;
+            float porcentajeVendidoLocalidad = (100*entradasVendidas)/capacidadMaxima;
+            float precioTotalLocalidad = entradasVendidas * localidad.getPrecio();
+            estadisticasEvento.getVentasPorLocalidad().put(localidad.getNombre(), porcentajeVendidoLocalidad);
+            totalGanado += precioTotalLocalidad;
+        }
+
+        estadisticasEvento.setTotalGanadoPorVentas(totalGanado);
+        return estadisticasEvento;
     }
 
     @Override
@@ -342,23 +448,6 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
     @Override
-    public void notificarCreacionCupon(Cupon cupon) throws Exception {
-        String mensaje = "¡Se ha creado un nuevo cupón que podrás utilizar!\n" +
-                "Vigencia: desde " + cupon.getFechaInicio() + " hasta " + cupon.getFechaFin() + "\n" +
-                "Código cupón: " + cupon.getCodigo();
-
-        for (Usuario usuario : usuarios) {
-            String email = usuario.getEmail();
-            try {
-                new EnvioEmail(email, "Cupón de descuento", mensaje).enviarNotificacion();
-            } catch (Exception e) {
-                System.out.println("Error al enviar correo electrónico a: " + email);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
     public Factura generarFactura(Compra compra) throws Exception {
         Localidad localidad = compra.getLocalidad();
         int cantidadPersonas = compra.getCantidadEntradas();
@@ -403,14 +492,13 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
 
-    public  static  void main(String args[]){
-        UniEventos uniEventos = new UniEventos();
+    public void enviarEmail(Usuario usuario, String mensaje, String asunto){
+        String email = usuario.getEmail();
         try {
-            uniEventos.registrarUsuario("1234", "Valentina Naranjo", "3052571455", "vnaranjo161@gmail.com", "1234");
-            uniEventos.crearCupon(10.0F, LocalDate.now(), LocalDate.now());
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            new EnvioEmail(email, asunto, mensaje).enviarNotificacion();
+        } catch (Exception e) {
+            System.out.println("Error al enviar correo electrónico a: " + email);
+            e.printStackTrace();
         }
     }
-
 }

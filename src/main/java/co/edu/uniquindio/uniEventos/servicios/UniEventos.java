@@ -31,14 +31,12 @@ public interface UniEventos {
 
     ArrayList<Evento> listarEventos() throws Exception;
 
-    ArrayList<Evento> filtrarEventos() throws Exception; //PARAMETROS POR DEFINIR
+    List<Evento> filtrarEventos(String nombre,TipoEvento tipoEvento, String ciudad) throws Exception; //PARAMETROS POR DEFINIR
 
     boolean eliminarEvento(String codigo) throws Exception;
 
     // Métodos de gestión de cupones
     boolean crearCupon(float porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception;
-
-    boolean enviarCuponPrimeraCompra(String email) throws Exception;
 
     // Métodos de compra
     Compra realizarCompra(String email, String eventoId, String localidad, int cantidadEntradas, String codigoCupon) throws Exception;
@@ -49,6 +47,7 @@ public interface UniEventos {
     boolean cancelarCompra(String codigoFactura) throws Exception;
 
     Compra obtenerCompra(String codigoFactura) throws Exception;
+    Factura generarFactura(Compra compra) throws Exception;
 
     ArrayList<Compra> listarComprasPorUsuario(String email) throws Exception;
 
@@ -62,19 +61,17 @@ public interface UniEventos {
     void validarString(String string, String mensaje) throws Exception;
 
     void validarDatosRegistro(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception;
-    void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception;
-
     void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
     void validarDatosCupon(double porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception;
+    void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception;
 
     Cupon validarYBuscarCupon(String codigoCupon, Usuario usuario) throws Exception;
 
-    public Cupon buscarCupon(String codigoCupon) throws Exception;
+    Cupon buscarCupon(String codigoCupon) throws Exception;
 
-    void notificarCreacionCupon(Cupon cupon) throws Exception;
+    void enviarEmail(Usuario usuario, String mensaje, String asunto) throws Exception;
 
-    Factura generarFactura(Compra compra) throws Exception;
-    void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception;
+    void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception;
 
 
 

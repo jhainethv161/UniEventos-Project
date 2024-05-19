@@ -10,4 +10,5 @@ public class Localidad {
     private String nombre;
     private float precio;
     private int capacidadMaxima;
+    private int entradasVendidas;
 }
