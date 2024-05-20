@@ -3,9 +3,8 @@ package co.edu.uniquindio.uniEventos.modelo;
 import co.edu.uniquindio.uniEventos.factory.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import co.edu.uniquindio.uniEventos.servicios.CreacionEvento;
+import co.edu.uniquindio.uniEventos.servicios.UniEventosServicio;
 import co.edu.uniquindio.uniEventos.utils.EnvioEmail;
-import co.edu.uniquindio.uniEventos.utils.EnvioSMS;
-import co.edu.uniquindio.uniEventos.utils.EventoUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEventos {
+public class UniEventos implements UniEventosServicio {
     private final ArrayList<Compra> compras;
     private final ArrayList<Usuario> usuarios;
     private final ArrayList<Evento> eventos;
@@ -106,8 +105,14 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
     @Override
-    public boolean iniciarSesion(String email, String password) throws Exception {
-        return false;
+    public Usuario iniciarSesion(String email, String password) throws Exception {
+        Usuario usuario = obtenerUsuarioEmail(email);
+        if(usuario != null){
+            if(usuario.getContrasena().equals(password)){
+                return usuario;
+            }
+        }
+        return  null;
     }
 
     @Override
@@ -500,15 +505,5 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
             System.out.println("Error al enviar correo electrónico a: " + email);
             e.printStackTrace();
         }
-    }
-
-    public Usuario validarUsuario(String email, String contrasena) throws Exception{
-        Usuario usuario = obtenerUsuarioEmail(email);
-        if(usuario != null){
-            if(usuario.getContrasena().equals(contrasena)){
-                return usuario;
-            }
-        }
-        return  null;
     }
 }

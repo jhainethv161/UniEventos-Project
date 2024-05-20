@@ -2,13 +2,14 @@ package co.edu.uniquindio.uniEventos.controlador;
 
 import co.edu.uniquindio.uniEventos.modelo.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
-import co.edu.uniquindio.uniEventos.servicios.UniEventos;
+import co.edu.uniquindio.uniEventos.servicios.UniEventosServicio;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControladorPrincipal implements UniEventos {
+public class ControladorPrincipal implements UniEventosServicio {
+
     @Override
     public boolean registrarUsuario(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception {
         return false;
@@ -20,8 +21,8 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public boolean iniciarSesion(String email, String password) throws Exception {
-        return false;
+    public Usuario iniciarSesion(String email, String password) throws Exception {
+        return null;
     }
 
     @Override
@@ -95,6 +96,11 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
+    public Factura generarFactura(Compra compra) throws Exception {
+        return null;
+    }
+
+    @Override
     public ArrayList<Compra> listarComprasPorUsuario(String email) throws Exception {
         return null;
     }
@@ -120,17 +126,17 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception {
-
-    }
-
-    @Override
     public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
 
     }
 
     @Override
     public void validarDatosCupon(double porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
+
+    }
+
+    @Override
+    public void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception {
 
     }
 
@@ -150,12 +156,7 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public Factura generarFactura(Compra compra) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception {
+    public void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception {
 
     }
 }

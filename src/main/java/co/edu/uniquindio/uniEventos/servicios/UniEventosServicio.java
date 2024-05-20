@@ -6,16 +6,15 @@ import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public interface UniEventos {
+public interface UniEventosServicio {
 
     // Métodos de gestión de usuarios
     boolean registrarUsuario(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception;
 
     boolean activarCuenta(String email, String codigoActivacion) throws Exception;
 
-    boolean iniciarSesion(String email, String password) throws Exception;
+    Usuario iniciarSesion(String email, String password) throws Exception;
 
     Usuario obtenerUsuarioEmail(String email) throws Exception;
 
