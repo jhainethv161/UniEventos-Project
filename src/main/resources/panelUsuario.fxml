@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="771.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.PanelUsuarioController">
+   <children>
+      <HBox alignment="CENTER" prefHeight="52.0" prefWidth="600.0" style="-fx-spacing: 20;">
+         <children>
+            <Label prefHeight="18.0" prefWidth="54.0" text="Nombre: " />
+            <TextField prefHeight="26.0" prefWidth="113.0" />
+            <Label text="Tipo: " />
+            <ComboBox fx:id="tipoEvento" prefHeight="26.0" prefWidth="129.0" />
+            <Label text="Ciudad: " />
+            <TextField />
+            <Button mnemonicParsing="false" text="Buscar evento" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 20;">
+         <children>
+            <Button mnemonicParsing="false" text="Realizar compra" onAction="#realizarCompra"/>
+            <Button mnemonicParsing="false" text="Cancelar compra" onAction="#cancelearCompra"/>
+            <Button mnemonicParsing="false" text="Listar compras" />
+         </children>
+      </HBox>
+      <HBox alignment="BOTTOM_RIGHT" prefHeight="27.0" prefWidth="771.0" style="-fx-spacing: 30.0;">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Button mnemonicParsing="false" text="Cerrar sesion" onAction="#cerrarSesion"/>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

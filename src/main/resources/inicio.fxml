@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="156.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.InicioController">
+   <children>
+      <HBox alignment="CENTER" prefHeight="52.0" prefWidth="600.0" style="-fx-spacing: 20;">
+         <children>
+            <Label prefHeight="18.0" prefWidth="54.0" text="Nombre: " />
+            <TextField prefHeight="26.0" prefWidth="113.0" />
+            <Label text="Tipo: " />
+            <ComboBox prefHeight="26.0" prefWidth="129.0" />
+            <Label text="Ciudad: " />
+            <TextField />
+            <Button mnemonicParsing="false" text="Buscar evento" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 50;">
+         <children>
+            <Button mnemonicParsing="false" text="Iniciar sesión " fx:id="btnIniciarSesion" onAction="#iniciarSesion"/>
+            <Button mnemonicParsing="false" text="Registrarme"  fx:id="btnRegistrarme"/>
+         </children>
+      </HBox>
+   </children>
+</VBox>

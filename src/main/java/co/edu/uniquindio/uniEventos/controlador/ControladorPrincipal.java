@@ -2,13 +2,88 @@ package co.edu.uniquindio.uniEventos.controlador;
 
 import co.edu.uniquindio.uniEventos.modelo.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
-import co.edu.uniquindio.uniEventos.servicios.UniEventos;
+import co.edu.uniquindio.uniEventos.servicios.UniEventosServicio;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControladorPrincipal implements UniEventos {
+public class ControladorPrincipal implements UniEventosServicio {
+
+    private final UniEventos uniEventos;
+
+    private ControladorPrincipal() {
+        uniEventos = new UniEventos();
+    }
+    public static ControladorPrincipal INSTANCIA;
+    public static Sesion SESION;
+
+    public static ControladorPrincipal getInstancia() {
+        if (INSTANCIA == null) {
+            INSTANCIA = new ControladorPrincipal();
+        }
+        return INSTANCIA;
+    }
+
+    public Sesion getInstanciaSesion(){
+        if (SESION == null) {
+            SESION = new Sesion();
+        }
+        return SESION;
+    }
+    public void cerrarSesion(){
+        SESION= null;
+    }
+
+    public FXMLLoader navegarVentana(String nombreArchivoFxml, String tituloVentana){
+        try {
+            // Cargar la vista
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(nombreArchivoFxml));
+            Parent root = loader.load();
+
+            // Crear la escena
+            Scene scene = new Scene(root);
+
+            // Crear un nuevo escenario (ventana)
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.setTitle(tituloVentana);
+
+            // Mostrar la nueva ventana
+            stage.show();
+            return loader;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return  null;
+        }
+
+    }
+
+    public ButtonType mostrarAlerta(String mensaje, Alert.AlertType tipo){
+        Alert alert = new Alert(tipo);
+        alert.setHeaderText(mensaje);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+        return alert.getResult();
+    }
+
+    public void cerrarVentana(Node node){
+        Stage stage = (Stage) node.getScene().getWindow();
+        stage.close();
+    }
+
+
     @Override
     public boolean registrarUsuario(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception {
         return false;
@@ -16,12 +91,12 @@ public class ControladorPrincipal implements UniEventos {
 
     @Override
     public boolean activarCuenta(String email, String codigoActivacion) throws Exception {
-        return false;
+        return uniEventos.activarCuenta(email, codigoActivacion);
     }
 
     @Override
-    public boolean iniciarSesion(String email, String password) throws Exception {
-        return false;
+    public Usuario iniciarSesion(String email, String password) throws Exception {
+        return uniEventos.iniciarSesion(email, password);
     }
 
     @Override
@@ -46,7 +121,7 @@ public class ControladorPrincipal implements UniEventos {
 
     @Override
     public Evento buscarEventoCodigo(String eventoId) throws Exception {
-        return null;
+        return uniEventos.buscarEventoCodigo(eventoId);
     }
 
     @Override
@@ -71,7 +146,7 @@ public class ControladorPrincipal implements UniEventos {
 
     @Override
     public Compra realizarCompra(String email, String eventoId, String localidad, int cantidadEntradas, String codigoCupon) throws Exception {
-        return null;
+        return uniEventos.realizarCompra(email, eventoId, localidad, cantidadEntradas, codigoCupon);
     }
 
     @Override
@@ -91,6 +166,11 @@ public class ControladorPrincipal implements UniEventos {
 
     @Override
     public Compra obtenerCompra(String codigoFactura) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Factura generarFactura(Compra compra) throws Exception {
         return null;
     }
 
@@ -120,17 +200,17 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception {
-
-    }
-
-    @Override
     public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
 
     }
 
     @Override
     public void validarDatosCupon(double porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
+
+    }
+
+    @Override
+    public void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception {
 
     }
 
@@ -150,12 +230,7 @@ public class ControladorPrincipal implements UniEventos {
     }
 
     @Override
-    public Factura generarFactura(Compra compra) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception {
+    public void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception {
 
     }
 }

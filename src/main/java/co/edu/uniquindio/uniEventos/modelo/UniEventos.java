@@ -3,17 +3,17 @@ package co.edu.uniquindio.uniEventos.modelo;
 import co.edu.uniquindio.uniEventos.factory.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import co.edu.uniquindio.uniEventos.servicios.CreacionEvento;
+import co.edu.uniquindio.uniEventos.servicios.UniEventosServicio;
 import co.edu.uniquindio.uniEventos.utils.EnvioEmail;
-import co.edu.uniquindio.uniEventos.utils.EnvioSMS;
-import co.edu.uniquindio.uniEventos.utils.EventoUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import  lombok.*;
 
-public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEventos {
+public class UniEventos implements UniEventosServicio {
     private final ArrayList<Compra> compras;
     private final ArrayList<Usuario> usuarios;
     private final ArrayList<Evento> eventos;
@@ -24,6 +24,7 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
         eventos = new ArrayList<Evento>();
         compras = new ArrayList<Compra>();
         cupones = new ArrayList<Cupon>();
+        llenarDatosPrueba();
     }
 
     @Override
@@ -106,8 +107,14 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
     }
 
     @Override
-    public boolean iniciarSesion(String email, String password) throws Exception {
-        return false;
+    public Usuario iniciarSesion(String email, String password) throws Exception {
+        Usuario usuario = obtenerUsuarioEmail(email);
+        if(usuario != null){
+            if(usuario.getContrasena().equals(password)){
+                return usuario;
+            }
+        }
+        return  null;
     }
 
     @Override
@@ -502,13 +509,30 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
         }
     }
 
-    public Usuario validarUsuario(String email, String contrasena) throws Exception{
-        Usuario usuario = obtenerUsuarioEmail(email);
-        if(usuario != null){
-            if(usuario.getContrasena().equals(contrasena)){
-                return usuario;
-            }
+    public void llenarDatosPrueba(){
+        try {
+            Usuario usuario = Usuario.builder()
+                    .nombreCompleto("Valentina Naranjo")
+                    .activo(true)
+                    .email("vnaranjo161@gmail.com")
+                    .contrasena("123456")
+                    .cedula("1234567890")
+                    .codigoActivacion("1111")
+                    .build();
+
+            usuarios.add(usuario);
+
+            // Crear localidades para el evento
+            ArrayList<Localidad> localidades = new ArrayList<>();
+            localidades.add(new Localidad("VIP", 100, 200, 0));
+            localidades.add(new Localidad("General", 200, 100, 0));
+
+            // Crear eventos
+            crearEvento("Concierto de Rock", "Bogotá", "El mejor concierto de rock del año", TipoEvento.CONCIERTO, "imagen.jpg", LocalDate.of(2024, 6, 20), "Dirección del evento", localidades);
+            String codigoEvento = eventos.getFirst().getCodigo();
+            System.out.println(codigoEvento);
+        }catch (Exception e){
+
         }
-        return  null;
     }
 }

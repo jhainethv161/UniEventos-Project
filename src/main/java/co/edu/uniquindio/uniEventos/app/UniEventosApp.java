@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class UniEventosApp extends Application {
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(UniEventosApp.class.getResource("/paginaInicio.fxml"));
+        FXMLLoader loader = new FXMLLoader(UniEventosApp.class.getResource("/panelUsuario.fxml"));
         Parent parent = loader.load();
 
         Scene scene = new Scene(parent);
