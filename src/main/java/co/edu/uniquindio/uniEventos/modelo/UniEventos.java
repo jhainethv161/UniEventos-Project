@@ -501,4 +501,14 @@ public class UniEventos implements co.edu.uniquindio.uniEventos.servicios.UniEve
             e.printStackTrace();
         }
     }
+
+    public Usuario validarUsuario(String email, String contrasena) throws Exception{
+        Usuario usuario = obtenerUsuarioEmail(email);
+        if(usuario != null){
+            if(usuario.getContrasena().equals(contrasena)){
+                return usuario;
+            }
+        }
+        return  null;
+    }
 }
