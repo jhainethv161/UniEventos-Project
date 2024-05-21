@@ -11,7 +11,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PanelUsuarioController implements Initializable {
-    private final ControladorPrincipal controladorPrincipal = ControladorPrincipal.getInstancia();
+    private final ControladorPrincipal controladorPrincipal;
+    public PanelUsuarioController(){
+        controladorPrincipal = ControladorPrincipal.getInstancia();
+    }
     @FXML
     private ComboBox<TipoEvento> tipoEvento;
 

@@ -40,7 +40,7 @@
         <HBox alignment="CENTER" prefHeight="52.0" prefWidth="450.0" style="-fx-spacing: 60;">
             <children>
                 <Button mnemonicParsing="false" onAction="#volver" text="Volver" />
-                <Button mnemonicParsing="false" text="Realizar compra" />
+                <Button mnemonicParsing="false" text="Realizar compra" onAction="#realizarCompra" />
             </children>
         </HBox>
     </children>

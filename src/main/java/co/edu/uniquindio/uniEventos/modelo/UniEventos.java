@@ -1,5 +1,6 @@
 package co.edu.uniquindio.uniEventos.modelo;
 
+import co.edu.uniquindio.uniEventos.controlador.ControladorPrincipal;
 import co.edu.uniquindio.uniEventos.factory.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import co.edu.uniquindio.uniEventos.servicios.CreacionEvento;
@@ -509,11 +510,25 @@ public class UniEventos implements UniEventosServicio {
         }
     }
 
+    public Localidad crearLocalidad(String nombreLocalidad, int capacidadMaxima, float precio) throws  Exception{
+        try {
+            validarString(nombreLocalidad, "El nombre de la localidad es requerido");
+            if (capacidadMaxima<0 || precio<0){
+                throw new Exception("Tanto la capacidad maxima como el precio deben de ser mayores a cero");
+            }
+            return new Localidad(nombreLocalidad, precio, capacidadMaxima, 0);
+
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
     public void llenarDatosPrueba(){
         try {
             Usuario usuario = Usuario.builder()
                     .nombreCompleto("Valentina Naranjo")
-                    .activo(true)
+                    .activo(false)
                     .email("vnaranjo161@gmail.com")
                     .contrasena("123456")
                     .cedula("1234567890")
@@ -521,6 +536,9 @@ public class UniEventos implements UniEventosServicio {
                     .build();
 
             usuarios.add(usuario);
+            //ControladorPrincipal controladorPrincipal = ControladorPrincipal.getInstancia();
+            //Sesion sesion = controladorPrincipal.getInstanciaSesion();
+            //sesion.setUsuario(usuario);
 
             // Crear localidades para el evento
             ArrayList<Localidad> localidades = new ArrayList<>();

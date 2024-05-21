@@ -72,6 +72,9 @@ public interface UniEventosServicio {
 
     void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception;
 
+    public Localidad crearLocalidad(String nombreLocalidad, int capacidadMaxima, float precio) throws  Exception;
+
+
 
 
     }

@@ -15,17 +15,21 @@ import javafx.scene.Node;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 public class ControladorPrincipal implements UniEventosServicio {
 
     private final UniEventos uniEventos;
 
+    @Getter
+    @Setter
+    public ArrayList<Localidad> localidadesEvento;
     private ControladorPrincipal() {
         uniEventos = new UniEventos();
+        localidadesEvento = new ArrayList<>();
     }
     public static ControladorPrincipal INSTANCIA;
     public static Sesion SESION;
-
     public static ControladorPrincipal getInstancia() {
         if (INSTANCIA == null) {
             INSTANCIA = new ControladorPrincipal();
@@ -86,7 +90,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public boolean registrarUsuario(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception {
-        return false;
+        return uniEventos.registrarUsuario(cedula, nombreCompleto, telefono, email, contrasena);
     }
 
     @Override
@@ -111,7 +115,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public boolean crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
-        return false;
+        return uniEventos.crearEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
     }
 
     @Override
@@ -161,7 +165,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public boolean cancelarCompra(String codigoFactura) throws Exception {
-        return false;
+        return uniEventos.cancelarCompra(codigoFactura);
     }
 
     @Override
@@ -232,5 +236,10 @@ public class ControladorPrincipal implements UniEventosServicio {
     @Override
     public void enviarNotificacionesRegistro(String email, String codigoActivacion) throws Exception {
 
+    }
+
+    @Override
+    public Localidad crearLocalidad(String nombreLocalidad, int capacidadMaxima, float precio) throws Exception {
+        return uniEventos.crearLocalidad(nombreLocalidad, capacidadMaxima, precio);
     }
 }

@@ -5,7 +5,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 public class ActivacionCuentaController {
-    private final ControladorPrincipal controladorPrincipal = ControladorPrincipal.getInstancia();
+    private final ControladorPrincipal controladorPrincipal;
+
+    public ActivacionCuentaController(){
+        controladorPrincipal = ControladorPrincipal.getInstancia();
+    }
+
     @FXML
     private TextField codigoActivacion;
 

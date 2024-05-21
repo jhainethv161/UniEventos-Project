@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="227.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.CancelarCompraController">
+   <children>
+      <Label text="Cancelacion de compra">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label prefHeight="60.0" prefWidth="248.0" text="Por favor ingrese el codigo de la factura de la compra que desea cancelar:  " textAlignment="CENTER" wrapText="true" />
+      <HBox alignment="CENTER" prefHeight="44.0" prefWidth="600.0">
+         <children>
+            <TextField fx:id="txtCodigoFactura" alignment="CENTER" prefHeight="26.0" prefWidth="186.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="33.0" prefWidth="286.0" style="-fx-spacing: 30;">
+         <children>
+            <Button mnemonicParsing="false" onAction="#volver" text="Volver" />
+            <Button mnemonicParsing="false" onAction="#cancelarCompra" text="Cancelar compra" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
