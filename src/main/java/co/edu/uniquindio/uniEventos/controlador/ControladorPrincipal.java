@@ -145,7 +145,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public boolean crearCupon(float porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
-        return false;
+        return uniEventos.crearCupon(porcentajeDescuento, fechaInicio, fechaFin);
     }
 
     @Override

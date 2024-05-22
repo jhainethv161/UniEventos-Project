@@ -2,11 +2,15 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="339.0" prefWidth="453.0" style="-fx-spacing: 30;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.CrearCuponController">
    <children>
-      <Label text="Creacion cupon" />
-      <HBox prefHeight="115.0" prefWidth="600.0">
+      <Label text="Creacion de cupon">
+         <font>
+            <Font size="30.0" />
+         </font></Label>
+      <HBox alignment="CENTER" prefHeight="115.0" prefWidth="600.0">
          <children>
             <GridPane prefHeight="198.0" prefWidth="320.0">
               <columnConstraints>
@@ -19,14 +23,20 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Descuento (porcentaje)" />
-                  <Label text="Fecha inicio" GridPane.rowIndex="1" />
-                  <Label text="Label" GridPane.rowIndex="2" />
-                  <TextField GridPane.columnIndex="1" />
-                  <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Descuento (porcentaje):" />
+                  <Label text="Fecha inicio:" GridPane.rowIndex="1" />
+                  <Label text="Fecha fin: " GridPane.rowIndex="2" />
+                  <TextField fx:id="txtPorcentaje" GridPane.columnIndex="1" />
+                  <DatePicker fx:id="fechaInicio" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <DatePicker fx:id="fechaFin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="600.0" style="-fx-spacing: 50;">
+         <children>
+            <Button mnemonicParsing="false" onAction="#volver" text="Volver" />
+            <Button mnemonicParsing="false" onAction="#crearCupon" text="Crear cupon" />
          </children>
       </HBox>
    </children>
