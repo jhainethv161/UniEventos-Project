@@ -15,9 +15,10 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" prefHeight="61.0" prefWidth="431.0">
+      <HBox alignment="CENTER" prefHeight="61.0" prefWidth="431.0" style="-fx-spacing: 20;">
          <children>
             <Button mnemonicParsing="false" onAction="#gestionarEventos" text="Gestionar eventos" />
+            <Button mnemonicParsing="false" onAction="#crearCupon" text="Crear cupon " />
          </children>
       </HBox>
    </children>

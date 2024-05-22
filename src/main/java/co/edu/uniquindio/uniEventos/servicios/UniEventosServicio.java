@@ -24,7 +24,7 @@ public interface UniEventosServicio {
     // Métodos de gestión de eventos
     boolean crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
 
-    boolean modificarEvento(String eventoId, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
+    boolean modificarEvento(String eventoId, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception;
 
     Evento buscarEventoCodigo(String eventoId) throws Exception;
 

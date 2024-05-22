@@ -9,4 +9,9 @@ public class PanelAdminController {
     public void gestionarEventos(){
         controladorPrincipal.navegarVentana("/gestionarEventos.fxml", "Gestion de eventos");
     }
+
+    public void crearCupon(){
+        controladorPrincipal.navegarVentana("/crearCupon.fxml", "Creacion de cupones");
+
+    }
 }

@@ -84,6 +84,16 @@ public class UniEventos implements UniEventosServicio {
         }
     }
 
+    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception {
+        validarString(nombre, "el nombre es requerido");
+        validarString(ciudad, "La ciudad es requerida");
+        validarString(descripcion, "La descripcion es requerida");
+        validarString(imagen, "La imagen es requerida");
+        if (fecha == null || tipoEvento == null || fecha.isBefore(LocalDate.now())){
+            throw new Exception("Asegurate de llenar todos los campos. Intenta nuevamente");
+        }
+    }
+
     @Override
     public void validarDatosCupon(double porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
         if (porcentajeDescuento <= 0 || porcentajeDescuento > 100) {
@@ -158,7 +168,7 @@ public class UniEventos implements UniEventosServicio {
     }
 
     @Override
-    public boolean modificarEvento(String codigo, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+    public boolean modificarEvento(String codigo, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception {
         try {
             Evento evento = buscarEventoCodigo(codigo);
             ArrayList<Compra> comprasEvento = obtenerComprasEvento(evento);
@@ -167,7 +177,7 @@ public class UniEventos implements UniEventosServicio {
                 throw new Exception("El evento con el código proporcionado no existe.");
             }
 
-            validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
+            validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion);
 
             evento.setNombre(nombre);
             evento.setCiudad(ciudad);
@@ -176,7 +186,6 @@ public class UniEventos implements UniEventosServicio {
             evento.setImagen(imagen);
             evento.setFecha(fecha);
             evento.setDireccion(direccion);
-            evento.setLocalidades(localidades);
 
             String mensaje = "Se ha modificado en evento que has comprado, los nuevos datos son: \n \n" + evento.toString();
 
@@ -219,11 +228,9 @@ public class UniEventos implements UniEventosServicio {
 
     @Override
     public boolean eliminarEvento(String codigo) throws Exception {
-        Evento eventoEliminar = null;
-        for (Evento evento:eventos){
-            if (evento.getCodigo().equals(codigo)){
-                    eventoEliminar = evento;
-            }
+        Evento eventoEliminar = buscarEventoCodigo(codigo);
+        if (eventoEliminar == null){
+            throw new Exception("No se ha encontrado un evento con este codigo");
         }
 
         ArrayList<Compra>  comprasEvento = obtenerComprasEvento(eventoEliminar);
@@ -233,12 +240,10 @@ public class UniEventos implements UniEventosServicio {
             for (Compra compra: comprasEvento){
                 enviarEmail(compra.getUsuario(), mensaje, "Evento cancelado");
             }
-            eventos.remove(eventoEliminar);
-            return  true;
         }
 
-
-        return  false;
+        eventos.remove(eventoEliminar);
+        return  true;
     }
 
 
@@ -344,9 +349,12 @@ public class UniEventos implements UniEventosServicio {
     @Override
     public boolean cancelarCompra(String codigoFactura) throws Exception {
         Compra compra = obtenerCompra(codigoFactura);
-
         if (compra == null) {
             throw new Exception("No se encontró la compra con el código de factura proporcionado.");
+        }
+
+        if (compra.getEvento().getFecha().isBefore(LocalDate.now())){
+            throw new Exception("No puede cancelar esta compra, el evento ya fue realizado.");
         }
 
         Localidad localidad = compra.getLocalidad();

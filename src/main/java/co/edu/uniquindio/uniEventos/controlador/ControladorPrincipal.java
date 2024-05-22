@@ -119,8 +119,8 @@ public class ControladorPrincipal implements UniEventosServicio {
     }
 
     @Override
-    public boolean modificarEvento(String eventoId, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
-        return false;
+    public boolean modificarEvento(String eventoId, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception {
+        return uniEventos.modificarEvento(eventoId, nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public ArrayList<Evento> listarEventos() throws Exception {
-        return null;
+        return uniEventos.listarEventos();
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public boolean eliminarEvento(String codigo) throws Exception {
-        return false;
+        return uniEventos.eliminarEvento(codigo);
     }
 
     @Override

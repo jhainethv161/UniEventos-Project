@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class GestionarEventosController implements Observable {
     private final ControladorPrincipal controladorPrincipal;
+    //CREACION DE EVENTO
     @FXML
     private TextField txtNombre;
     @FXML
@@ -26,10 +27,7 @@ public class GestionarEventosController implements Observable {
     private DatePicker fecha;
     @FXML
     private ComboBox<TipoEvento> tipoEvento;
-    @FXML
-    private Button btnLocalidades;
     private ArrayList<Localidad> localidades;
-
     @FXML
     private TableView<Localidad> tablaLocalidades;
     @FXML
@@ -38,6 +36,37 @@ public class GestionarEventosController implements Observable {
     private TableColumn<Localidad, Integer> capacidad;
     @FXML
     private TableColumn<Localidad, Float> precio;
+
+    //ACTUALIZACION DE EVENTO
+    @FXML
+    private TextField txtNombreAc;
+    @FXML
+    private TextField txtCiudadAc;
+    @FXML
+    private TextField txtDescripcionAc;
+    @FXML
+    private TextField txtImagenAc;
+    @FXML
+    private TextField txtDireccionAc;
+    @FXML
+    private TextField txtCodigo;
+    @FXML
+    private DatePicker fechaAc;
+    @FXML
+    private ComboBox<TipoEvento> tipoEventoAc;
+
+    //ELIMINACION DE EVENTO
+    @FXML
+    private TextField txtCodigoEl;
+
+    //FILTRO DE EVENTO
+    @FXML
+    private TextField txtNombreFl;
+    @FXML
+    private TextField txtCiudadFl;
+    @FXML
+    private ComboBox<TipoEvento> tipoEventoFl;
+
 
 
     public GestionarEventosController(){
@@ -96,7 +125,39 @@ public class GestionarEventosController implements Observable {
         precio.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getPrecio()));
 
         tipoEvento.setItems(FXCollections.observableArrayList(TipoEvento.values()));
-
+        tipoEventoAc.setItems(FXCollections.observableArrayList(TipoEvento.values()));
+        tipoEventoFl.setItems(FXCollections.observableArrayList(TipoEvento.values()));
     }
 
+    public void actualizarEvento(){
+        try {
+            controladorPrincipal.modificarEvento(txtCodigo.getText(), txtNombreAc.getText(), txtCiudadAc.getText(), txtDescripcionAc.getText(), tipoEventoAc.getValue(),txtImagenAc.getText(), fechaAc.getValue(), txtDireccionAc.getText());
+            controladorPrincipal.mostrarAlerta("Evento actualizado de manera exitosa", Alert.AlertType.INFORMATION);
+            txtCiudadAc.clear();
+            txtDescripcionAc.clear();
+            txtDireccionAc.clear();
+            txtImagenAc.clear();
+            txtNombreAc.clear();
+            fechaAc.setValue(null);
+            tipoEventoAc.setValue(null);
+            txtCodigo.clear();
+        }catch (Exception e){
+            controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public  void eliminarEvento(){
+        try {
+            controladorPrincipal.eliminarEvento(txtCodigoEl.getText());
+            controladorPrincipal.mostrarAlerta("EVENTO ELIMINADO CON EXITO", Alert.AlertType.INFORMATION);
+            txtCodigoEl.clear();
+        }catch (Exception e){
+            controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
+    public void  filtrarEventos(){
+     //FALTA IMPLEMENTAR LA LOGICA DE COMUNICACION CON LA CLASE UNIEVENTOS A TRAVES DEL CONTROLADOR PRINCIPAL, EL METODO YA ESTA
+    }
 }
