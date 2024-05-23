@@ -56,6 +56,11 @@ public class DatosEstadisticosController implements Initializable {
         }
     }
 
+    public  void volver(){
+        controladorPrincipal.navegarVentana("/panelAdmin.fxml", "Panel administrador");
+        controladorPrincipal.cerrarVentana(txtCodigo);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         localidad.setCellValueFactory(new PropertyValueFactory<>("localidad"));

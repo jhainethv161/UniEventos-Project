@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="176.0" prefWidth="414.0" style="-fx-spacing: 20;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.PanelAdminController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="525.0" style="-fx-spacing: 20;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.PanelAdminController">
    <children>
       <Label text="Bienvenido, administrador ">
          <font>
@@ -15,11 +15,12 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" prefHeight="61.0" prefWidth="431.0" style="-fx-spacing: 20;">
+      <HBox alignment="CENTER" prefHeight="90.0" prefWidth="476.0" style="-fx-spacing: 20;">
          <children>
             <Button mnemonicParsing="false" onAction="#gestionarEventos" text="Gestionar eventos" />
             <Button mnemonicParsing="false" onAction="#crearCupon" text="Crear cupon " />
             <Button mnemonicParsing="false" onAction="#datosEstadisticos" text="Obtener datos estadisticos" />
+            <Button fx:id="cerrarSesion" mnemonicParsing="false" onAction="#cerrarSesion" text="Cerrar sesion" />
          </children>
       </HBox>
    </children>

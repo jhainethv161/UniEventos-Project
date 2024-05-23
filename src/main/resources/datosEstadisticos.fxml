@@ -27,6 +27,11 @@
          </children>
       </HBox>
       <Label fx:id="ganancias" text="Ganancias totales: " />
-      <Button mnemonicParsing="false" onAction="#consultarEstadisticas" text="Consultar" />
+      <HBox alignment="CENTER" prefHeight="68.0" prefWidth="600.0" style="-fx-spacing: 30;">
+         <children>
+            <Button mnemonicParsing="false" onAction="#consultarEstadisticas" text="Consultar" />
+            <Button mnemonicParsing="false" onAction="#volver" text="Volver" />
+         </children>
+      </HBox>
    </children>
 </VBox>

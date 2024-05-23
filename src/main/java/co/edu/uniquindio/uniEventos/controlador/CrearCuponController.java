@@ -38,6 +38,7 @@ public class CrearCuponController {
 
     public void  volver(){
         controladorPrincipal.cerrarVentana(fechaInicio);
+        controladorPrincipal.navegarVentana("/panelAdmin.fxml", "Panel administrador");
     }
 
 
