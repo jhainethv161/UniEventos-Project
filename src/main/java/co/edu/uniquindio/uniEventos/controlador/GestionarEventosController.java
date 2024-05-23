@@ -4,9 +4,17 @@ import co.edu.uniquindio.uniEventos.controlador.observador.Observable;
 import co.edu.uniquindio.uniEventos.modelo.Localidad;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import com.github.aytchell.qrgen.QrGenerator;
+import com.github.aytchell.qrgen.config.ErrorCorrectionLevel;
+import com.github.aytchell.qrgen.config.ImageFileType;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.nio.file.Path;
 
 import java.util.ArrayList;
 
@@ -37,6 +45,7 @@ public class GestionarEventosController implements Observable {
     @FXML
     private TableColumn<Localidad, Float> precio;
 
+
     //ACTUALIZACION DE EVENTO
     @FXML
     private TextField txtNombreAc;
@@ -66,7 +75,12 @@ public class GestionarEventosController implements Observable {
     private TextField txtCiudadFl;
     @FXML
     private ComboBox<TipoEvento> tipoEventoFl;
+    @FXML
+    //IMAGEN Y QR
+    private ImageView imagenSeleccionada;
 
+    @FXML
+    private ImageView qrGenerado;
 
 
     public GestionarEventosController(){
@@ -159,5 +173,60 @@ public class GestionarEventosController implements Observable {
 
     public void  filtrarEventos(){
      //FALTA IMPLEMENTAR LA LOGICA DE COMUNICACION CON LA CLASE UNIEVENTOS A TRAVES DEL CONTROLADOR PRINCIPAL, EL METODO YA ESTA
+    }
+
+    /**
+     * Método que se ejecuta cuando se presiona el botón "Seleccionar imagen".
+     * @param actionEvent
+     */
+    public void seleccionarImagen(ActionEvent actionEvent) {
+        abrirFileChooser();
+    }
+
+    /**
+     * Método que se ejecuta cuando se presiona el botón "Generar QR".
+     * @param actionEvent
+     * @throws Exception
+     */
+    public void generarQR(ActionEvent actionEvent) throws Exception{
+
+        // Generar el código QR con la librería QRGen
+        QrGenerator generator = new QrGenerator()
+                .withSize(300, 300)
+                .withMargin(3)
+                .as(ImageFileType.PNG)
+                .withErrorCorrection(ErrorCorrectionLevel.Q);
+
+        // Escribir el código QR en un archivo temporal, reemplazar "Hello, World!" por el texto que se desea codificar
+        Path img = generator
+                .writeToTmpFile("Hello, World!");
+
+        // Mostrar el código QR en la interfaz gráfica
+        qrGenerado.setImage(new javafx.scene.image.Image(img.toUri().toString()));
+
+    }
+
+    /**
+     * Método que permite abrir un FileChooser para seleccionar una imagen.
+     */
+    private void abrirFileChooser() {
+
+        // Crear un FileChooser para seleccionar la imagen
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar imagen");
+
+        // Filtrar los archivos que se pueden seleccionar
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Mostrar el FileChooser y obtener la imagen seleccionada
+        File imagen = fileChooser.showOpenDialog(null);
+
+        // Mostrar la imagen seleccionada en la interfaz gráfica
+        if (imagen != null) {
+            imagenSeleccionada.setImage(new javafx.scene.image.Image(imagen.toURI().toString()));
+        }
+
     }
 }
