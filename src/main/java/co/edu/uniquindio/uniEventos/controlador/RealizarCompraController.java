@@ -4,14 +4,20 @@ import co.edu.uniquindio.uniEventos.modelo.Compra;
 import co.edu.uniquindio.uniEventos.modelo.Evento;
 import co.edu.uniquindio.uniEventos.modelo.Localidad;
 import co.edu.uniquindio.uniEventos.modelo.Sesion;
+import co.edu.uniquindio.uniEventos.utils.EnvioEmail;
+import com.github.aytchell.qrgen.QrGenerator;
+import com.github.aytchell.qrgen.config.ErrorCorrectionLevel;
+import com.github.aytchell.qrgen.config.ImageFileType;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -31,6 +37,8 @@ public class RealizarCompraController implements Initializable {
     private TextField txtEntradas;
     @FXML
     private TextField txtCupon;
+    @FXML
+    private ImageView qrGenerado;
 
     public void realizarCompra() {
         try {
@@ -40,10 +48,12 @@ public class RealizarCompraController implements Initializable {
 
             int cantidadEntradas = Integer.parseInt(txtEntradas.getText());
             Compra compra = controladorPrincipal.realizarCompra(sesion.getUsuario().getEmail(), txtIdEvento.getText(), opcionesLocalidad.getValue(), cantidadEntradas, txtCupon.getText());
+            generarQR(compra.getFactura().getCodigo(), compra);
             controladorPrincipal.mostrarAlerta("Compra realizada con exito. Al correo " + sesion.getUsuario().getEmail() + " se han enviado los detalles de la misma", Alert.AlertType.INFORMATION);
 
         }catch (Exception e){
             controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -54,7 +64,6 @@ public class RealizarCompraController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Añadir un listener a txtIdEvento para detectar cambios en su texto
         txtIdEvento.textProperty().addListener((observable, oldValue, newValue) -> {
             cargarLocalidades();
         });
@@ -75,6 +84,20 @@ public class RealizarCompraController implements Initializable {
         } catch (Exception e) {
             System.out.println("Error al cargar localidades: " + e.getMessage());
         }
+    }
+
+    public void generarQR(String codigoFactura, Compra compra) throws Exception{
+        QrGenerator generator = new QrGenerator()
+                .withSize(300, 300)
+                .withMargin(3)
+                .as(ImageFileType.PNG)
+                .withErrorCorrection(ErrorCorrectionLevel.Q);
+
+        Path img = generator
+                .writeToTmpFile(codigoFactura);
+
+        qrGenerado.setImage(new javafx.scene.image.Image(img.toUri().toString()));
+        compra.setQrGenerado(img);
     }
 
 

@@ -307,7 +307,7 @@ public class UniEventos implements UniEventosServicio {
         esPrimeraCompra(usuario);
         compras.add(compra);
 
-        return null;
+        return compra;
     }
 
 
