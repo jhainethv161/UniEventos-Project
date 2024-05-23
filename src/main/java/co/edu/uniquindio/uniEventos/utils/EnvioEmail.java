@@ -2,12 +2,16 @@ package co.edu.uniquindio.uniEventos.utils;
 
 
 import co.edu.uniquindio.uniEventos.servicios.Notificacion;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
 import lombok.AllArgsConstructor;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
+
+import java.nio.file.Path;
 
 
 @AllArgsConstructor
@@ -17,7 +21,6 @@ public class EnvioEmail implements Notificacion {
 
     @Override
     public void enviarNotificacion() {
-
         Email email = EmailBuilder.startingBlank()
                 .from("pruebas.uq.sis@gmail.com")
                 .to(destinatario)

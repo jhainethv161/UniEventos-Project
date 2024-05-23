@@ -2,6 +2,8 @@ package co.edu.uniquindio.uniEventos.modelo;
 
 import lombok.*;
 
+import java.nio.file.Path;
+
 @AllArgsConstructor
 @Builder
 @Getter
@@ -13,6 +15,7 @@ public class Compra {
     private Localidad localidad;
     private Cupon cupon;
     private Factura factura;
+    private Path QrGenerado;
 
     @Override
     public String toString() {

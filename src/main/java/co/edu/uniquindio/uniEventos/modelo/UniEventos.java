@@ -1,16 +1,20 @@
 package co.edu.uniquindio.uniEventos.modelo;
 
+import co.edu.uniquindio.uniEventos.controlador.ControladorPrincipal;
 import co.edu.uniquindio.uniEventos.factory.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import co.edu.uniquindio.uniEventos.servicios.CreacionEvento;
 import co.edu.uniquindio.uniEventos.servicios.UniEventosServicio;
 import co.edu.uniquindio.uniEventos.utils.EnvioEmail;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import lombok.*;
 
 public class UniEventos implements UniEventosServicio {
     private final ArrayList<Compra> compras;
@@ -23,6 +27,7 @@ public class UniEventos implements UniEventosServicio {
         eventos = new ArrayList<Evento>();
         compras = new ArrayList<Compra>();
         cupones = new ArrayList<Cupon>();
+        llenarDatosPrueba();
     }
 
     @Override
@@ -42,7 +47,7 @@ public class UniEventos implements UniEventosServicio {
                 .activo(false)
                 .build();
 
-        String codigoActivacion = "AC-"+UUID.randomUUID().toString().substring(0, 10);
+        String codigoActivacion = "AC-" + UUID.randomUUID().toString().substring(0, 10);
         usuario.setCodigoActivacion(codigoActivacion);
 
         enviarNotificacionesRegistro(email, codigoActivacion);
@@ -71,12 +76,22 @@ public class UniEventos implements UniEventosServicio {
     }
 
     @Override
-    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
         validarString(nombre, "el nombre es requerido");
         validarString(ciudad, "La ciudad es requerida");
         validarString(descripcion, "La descripcion es requerida");
-        validarString(imagen, "La imagen es requerida");
-        if (fecha == null || tipoEvento == null || localidades == null || localidades.isEmpty() || fecha.isBefore(LocalDate.now())){
+        if (fecha == null || tipoEvento == null || localidades == null || localidades.isEmpty() || fecha.isBefore(LocalDate.now())) {
+            throw new Exception("Asegurate de llenar todos los campos. Intenta nuevamente");
+        }
+    }
+
+    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion) throws Exception {
+        validarString(nombre, "el nombre es requerido");
+        validarString(ciudad, "La ciudad es requerida");
+        validarString(descripcion, "La descripcion es requerida");
+        validarString(direccion, "La direccion es requerida");
+
+        if (fecha == null || tipoEvento == null || fecha.isBefore(LocalDate.now())) {
             throw new Exception("Asegurate de llenar todos los campos. Intenta nuevamente");
         }
     }
@@ -94,25 +109,25 @@ public class UniEventos implements UniEventosServicio {
     @Override
     public boolean activarCuenta(String email, String codigoActivacion) throws Exception {
         Usuario usuario = obtenerUsuarioEmail(email);
-        if (!usuario.isActivo()){
-            if (usuario.getCodigoActivacion().equals(codigoActivacion)){
+        if (!usuario.isActivo()) {
+            if (usuario.getCodigoActivacion().equals(codigoActivacion)) {
                 usuario.setActivo(true);
-                return  true;
+                return true;
             }
             return false;
         }
-        throw new  Exception("El usuario ya se encuentra activo.");
+        throw new Exception("El usuario ya se encuentra activo.");
     }
 
     @Override
     public Usuario iniciarSesion(String email, String password) throws Exception {
         Usuario usuario = obtenerUsuarioEmail(email);
-        if(usuario != null){
-            if(usuario.getContrasena().equals(password)){
+        if (usuario != null) {
+            if (usuario.getContrasena().equals(password)) {
                 return usuario;
             }
         }
-        return  null;
+        return null;
     }
 
     @Override
@@ -122,7 +137,8 @@ public class UniEventos implements UniEventosServicio {
                 return usuario;
             }
         }
-        return null;    }
+        return null;
+    }
 
     @Override
     public Usuario obtenerUsuarioCedula(String cedula) throws Exception {
@@ -131,31 +147,33 @@ public class UniEventos implements UniEventosServicio {
                 return usuario;
             }
         }
-        return null;    }
-
-    @Override
-    public boolean crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
-        validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
-        CreacionEvento creacionEvento;
-        if (tipoEvento == TipoEvento.CONCIERTO){
-            creacionEvento = new EventoConcierto();
-        } else if (tipoEvento == TipoEvento.DEPORTE) {
-            creacionEvento = new EventoDeporte();
-        }else if (tipoEvento == TipoEvento.FESTIVAL){
-            creacionEvento = new EventoFestival();
-        } else if (tipoEvento == TipoEvento.TEATRO) {
-            creacionEvento = new EventoTeatro();
-        }else{
-            creacionEvento = new EventoOtro();
-        }
-
-        Evento evento = creacionEvento.crearEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
-        eventos.add(evento);
-        return true;
+        return null;
     }
 
     @Override
-    public boolean modificarEvento(String codigo, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+    public Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+        validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, fecha, direccion, localidades);
+        CreacionEvento creacionEvento;
+        if (tipoEvento == TipoEvento.CONCIERTO) {
+            creacionEvento = new EventoConcierto();
+        } else if (tipoEvento == TipoEvento.DEPORTE) {
+            creacionEvento = new EventoDeporte();
+        } else if (tipoEvento == TipoEvento.FESTIVAL) {
+            creacionEvento = new EventoFestival();
+        } else if (tipoEvento == TipoEvento.TEATRO) {
+            creacionEvento = new EventoTeatro();
+        } else {
+            creacionEvento = new EventoOtro();
+        }
+
+        Evento evento = creacionEvento.crearEvento(nombre, ciudad, descripcion, tipoEvento, fecha, direccion, localidades);
+        System.out.println(evento);
+        eventos.add(evento);
+        return evento;
+    }
+
+    @Override
+    public boolean modificarEvento(String codigo, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception {
         try {
             Evento evento = buscarEventoCodigo(codigo);
             ArrayList<Compra> comprasEvento = obtenerComprasEvento(evento);
@@ -164,20 +182,18 @@ public class UniEventos implements UniEventosServicio {
                 throw new Exception("El evento con el código proporcionado no existe.");
             }
 
-            validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
+            validarDatosEvento(nombre, ciudad, descripcion, tipoEvento, fecha, direccion);
 
             evento.setNombre(nombre);
             evento.setCiudad(ciudad);
             evento.setDescripcion(descripcion);
             evento.setTipoEvento(tipoEvento);
-            evento.setImagen(imagen);
             evento.setFecha(fecha);
             evento.setDireccion(direccion);
-            evento.setLocalidades(localidades);
 
             String mensaje = "Se ha modificado en evento que has comprado, los nuevos datos son: \n \n" + evento.toString();
 
-            for (Compra compra : comprasEvento){
+            for (Compra compra : comprasEvento) {
                 Usuario usuario = compra.getUsuario();
                 enviarEmail(usuario, mensaje, "Modificaion evento");
             }
@@ -207,48 +223,52 @@ public class UniEventos implements UniEventosServicio {
 
     @Override
     public List<Evento> filtrarEventos(String nombre, TipoEvento tipoEvento, String ciudad) {
-        return eventos.stream()
-                .filter(evento -> (nombre == null || evento.getNombre().equalsIgnoreCase(nombre)) &&
-                        (tipoEvento == null || evento.getTipoEvento() == tipoEvento) &&
+        System.out.println("Filtrando eventos con criterios - Nombre: " + nombre + ", TipoEvento: " + tipoEvento + ", Ciudad: " + ciudad);
+
+        List<Evento> eventosFilter = eventos.stream()
+                .filter(evento -> (nombre == null || evento.getNombre().equalsIgnoreCase(nombre)) ||
+                        (tipoEvento == null || evento.getTipoEvento() == tipoEvento) ||
                         (ciudad == null || evento.getCiudad().equalsIgnoreCase(ciudad)))
                 .collect(Collectors.toList());
+
+        System.out.println("Eventos filtrados: " + eventosFilter);
+
+        return eventosFilter;
     }
+
 
     @Override
     public boolean eliminarEvento(String codigo) throws Exception {
-        Evento eventoEliminar = null;
-        for (Evento evento:eventos){
-            if (evento.getCodigo().equals(codigo)){
-                    eventoEliminar = evento;
-            }
+        Evento eventoEliminar = buscarEventoCodigo(codigo);
+        if (eventoEliminar == null) {
+            throw new Exception("No se ha encontrado un evento con este codigo");
         }
 
-        ArrayList<Compra>  comprasEvento = obtenerComprasEvento(eventoEliminar);
+        ArrayList<Compra> comprasEvento = obtenerComprasEvento(eventoEliminar);
         String mensaje = "El evento " + eventoEliminar.getNombre() + " a sido cancelado, lamentamos informate esto. En los proximos dias recibiras tu reembolso";
 
-        if (eventoEliminar != null && comprasEvento != null && !comprasEvento.isEmpty()){
-            for (Compra compra: comprasEvento){
+        if (eventoEliminar != null && comprasEvento != null && !comprasEvento.isEmpty()) {
+            for (Compra compra : comprasEvento) {
                 enviarEmail(compra.getUsuario(), mensaje, "Evento cancelado");
             }
-            eventos.remove(eventoEliminar);
-            return  true;
         }
 
-
-        return  false;
+        eventos.remove(eventoEliminar);
+        return true;
     }
 
 
-    public ArrayList<Compra> obtenerComprasEvento(Evento evento){
+    public ArrayList<Compra> obtenerComprasEvento(Evento evento) {
         ArrayList<Compra> comprasEvento = new ArrayList<>();
-        for(Compra compra: compras){
-            if (compra.getEvento().equals(evento)){
+        for (Compra compra : compras) {
+            if (compra.getEvento().equals(evento)) {
                 comprasEvento.add(compra);
             }
         }
         return comprasEvento;
 
     }
+
     @Override
     public boolean crearCupon(float porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception {
         validarDatosCupon(porcentajeDescuento, fechaInicio, fechaFin);
@@ -266,7 +286,7 @@ public class UniEventos implements UniEventosServicio {
                 "Código cupón: " + cupon.getCodigo();
 
         cupones.add(cupon);
-        for (Usuario usuario: usuarios){
+        for (Usuario usuario : usuarios) {
             enviarEmail(usuario, mensaje, "Nuevo cupon disponible");
         }
 
@@ -281,7 +301,7 @@ public class UniEventos implements UniEventosServicio {
         Localidad localidadEvento = obtenerLocalidad(evento, localidad);
         Cupon cupon = null;
 
-        if (codigoCupon != null && !codigoCupon.isBlank()){
+        if (codigoCupon != null && !codigoCupon.isBlank()) {
             cupon = validarYBuscarCupon(codigoCupon, usuario);
         }
 
@@ -299,7 +319,7 @@ public class UniEventos implements UniEventosServicio {
         esPrimeraCompra(usuario);
         compras.add(compra);
 
-        return null;
+        return compra;
     }
 
 
@@ -329,7 +349,7 @@ public class UniEventos implements UniEventosServicio {
     }
 
     @Override
-    public Localidad obtenerLocalidad(Evento evento, String nombreLocalidad) throws Exception{
+    public Localidad obtenerLocalidad(Evento evento, String nombreLocalidad) throws Exception {
         for (Localidad localidad : evento.getLocalidades()) {
             if (localidad.getNombre().equals(nombreLocalidad)) {
                 return localidad;
@@ -341,9 +361,12 @@ public class UniEventos implements UniEventosServicio {
     @Override
     public boolean cancelarCompra(String codigoFactura) throws Exception {
         Compra compra = obtenerCompra(codigoFactura);
-
         if (compra == null) {
             throw new Exception("No se encontró la compra con el código de factura proporcionado.");
+        }
+
+        if (compra.getEvento().getFecha().isBefore(LocalDate.now())) {
+            throw new Exception("No puede cancelar esta compra, el evento ya fue realizado.");
         }
 
         Localidad localidad = compra.getLocalidad();
@@ -378,7 +401,8 @@ public class UniEventos implements UniEventosServicio {
             }
         }
 
-        return comprasUsuario;    }
+        return comprasUsuario;
+    }
 
     @Override
     public ArrayList<Evento> listarEventosPorRecaudacion() throws Exception {
@@ -397,8 +421,9 @@ public class UniEventos implements UniEventosServicio {
         EstadisticasEvento estadisticasEvento = new EstadisticasEvento();
         for (Localidad localidad : evento.getLocalidades()) {
             int capacidadMaxima = localidad.getCapacidadMaxima();
-            int entradasVendidas = localidad.getEntradasVendidas();;
-            float porcentajeVendidoLocalidad = (100*entradasVendidas)/capacidadMaxima;
+            int entradasVendidas = localidad.getEntradasVendidas();
+            ;
+            float porcentajeVendidoLocalidad = (100 * entradasVendidas) / capacidadMaxima;
             float precioTotalLocalidad = entradasVendidas * localidad.getPrecio();
             estadisticasEvento.getVentasPorLocalidad().put(localidad.getNombre(), porcentajeVendidoLocalidad);
             totalGanado += precioTotalLocalidad;
@@ -418,16 +443,16 @@ public class UniEventos implements UniEventosServicio {
 
     @Override
     public Cupon validarYBuscarCupon(String codigoCupon, Usuario usuario) throws Exception {
-    if (codigoCupon != null && !codigoCupon.isBlank()) {
-        Cupon cupon = buscarCupon(codigoCupon);
-        if (cupon == null) {
-            throw new Exception("El cupón especificado no existe");
+        if (codigoCupon != null && !codigoCupon.isBlank()) {
+            Cupon cupon = buscarCupon(codigoCupon);
+            if (cupon == null) {
+                throw new Exception("El cupón especificado no existe");
+            }
+            validarCuponUsuario(cupon, usuario);
+            return cupon;
         }
-        validarCuponUsuario(cupon, usuario);
-        return cupon;
+        return null;
     }
-    return null;
-}
 
     private void validarCuponUsuario(Cupon cupon, Usuario usuario) throws Exception {
         LocalDate fechaActual = LocalDate.now();
@@ -438,15 +463,15 @@ public class UniEventos implements UniEventosServicio {
             }
         }
 
-        if(!(cupon.getFechaInicio().isAfter(fechaActual) || cupon.getFechaFin().isBefore(fechaActual))){
+        if (!(cupon.getFechaInicio().isBefore(fechaActual) || cupon.getFechaFin().isAfter(fechaActual))) {
             throw new Exception("El cupón no es válido, intente nuevamente");
         }
     }
 
-    public Cupon buscarCupon(String codigoCupon) throws Exception{
-        for (Cupon cupon: cupones){
-            if (cupon.getCodigo().equals(codigoCupon)){
-                return  cupon;
+    public Cupon buscarCupon(String codigoCupon) throws Exception {
+        for (Cupon cupon : cupones) {
+            if (cupon.getCodigo().equals(codigoCupon)) {
+                return cupon;
             }
         }
         return null;
@@ -457,14 +482,14 @@ public class UniEventos implements UniEventosServicio {
         Localidad localidad = compra.getLocalidad();
         int cantidadPersonas = compra.getCantidadEntradas();
         Cupon cupon = compra.getCupon();
-        String codigoFactura =  "F-"+UUID.randomUUID().toString();
+        String codigoFactura = "F-" + UUID.randomUUID().toString();
         LocalDate fecha = LocalDate.now();
 
         float subtotal = localidad.getPrecio() * cantidadPersonas;
         float total = subtotal;
-        if (cupon != null){
-            float porcentajeDescuento = cupon.getPorcentajeDescuento()/100;
-            total = subtotal - subtotal*porcentajeDescuento;
+        if (cupon != null) {
+            float porcentajeDescuento = cupon.getPorcentajeDescuento() / 100;
+            total = subtotal - subtotal * porcentajeDescuento;
         }
 
         Factura factura = Factura.builder()
@@ -485,25 +510,69 @@ public class UniEventos implements UniEventosServicio {
         Usuario usuario = obtenerUsuarioEmail(email);
         Evento evento = buscarEventoCodigo(codigoEvento);
         Localidad localidad = obtenerLocalidad(evento, nombreLocalidad);
-        if (cantidadEntradas<=0){
-            throw  new Exception("La cantidad de personas para la compra debe ser mayor a cero.");
+        if (cantidadEntradas <= 0) {
+            throw new Exception("La cantidad de personas para la compra debe ser mayor a cero.");
         }
 
         comprobarCapacidadLocalidad(localidad, cantidadEntradas);
 
-        if ( usuario== null ||evento == null || localidad==null){
-            throw  new Exception("Ha ocurrido un error, revisa que todos los datos sean correctos");
+        if (usuario == null || evento == null || localidad == null) {
+            throw new Exception("Ha ocurrido un error, revisa que todos los datos sean correctos");
         }
     }
 
 
-    public void enviarEmail(Usuario usuario, String mensaje, String asunto){
+    public void enviarEmail(Usuario usuario, String mensaje, String asunto) {
         String email = usuario.getEmail();
         try {
             new EnvioEmail(email, asunto, mensaje).enviarNotificacion();
         } catch (Exception e) {
             System.out.println("Error al enviar correo electrónico a: " + email);
             e.printStackTrace();
+        }
+    }
+
+    public Localidad crearLocalidad(String nombreLocalidad, int capacidadMaxima, float precio) throws Exception {
+        try {
+            validarString(nombreLocalidad, "El nombre de la localidad es requerido");
+            if (capacidadMaxima < 0 || precio < 0) {
+                throw new Exception("Tanto la capacidad maxima como el precio deben de ser mayores a cero");
+            }
+            return new Localidad(nombreLocalidad, precio, capacidadMaxima, 0);
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+    public void llenarDatosPrueba() {
+        try {
+            Usuario usuario = Usuario.builder()
+                    .nombreCompleto("Valentina Naranjo")
+                    .activo(true)
+                    .email("vnaranjo161@gmail.com")
+                    .contrasena("123456")
+                    .cedula("1234567890")
+                    .codigoActivacion("1111")
+                    .build();
+
+            usuarios.add(usuario);
+            //ControladorPrincipal controladorPrincipal = ControladorPrincipal.getInstancia();
+            //Sesion sesion = controladorPrincipal.getInstanciaSesion();
+            //sesion.setUsuario(usuario);
+
+            // Crear localidades para el evento
+            ArrayList<Localidad> localidades = new ArrayList<>();
+            localidades.add(new Localidad("VIP", 100, 200, 0));
+            localidades.add(new Localidad("General", 200, 100, 0));
+
+            // Crear eventos
+            Evento evento = crearEvento("Concierto de Rock", "Bogotá", "El mejor concierto de rock del año", TipoEvento.CONCIERTO, LocalDate.of(2024, 6, 20), "Dirección del evento", localidades);
+            evento.setImagen(new File("C:\\Users\\MI PC\\Pictures\\Screenshots\\Captura de pantalla 2024-05-07 124718.png"));
+            String codigoEvento = eventos.getFirst().getCodigo();
+        } catch (Exception e) {
+
         }
     }
 }

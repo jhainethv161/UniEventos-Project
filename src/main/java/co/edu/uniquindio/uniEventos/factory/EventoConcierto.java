@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class EventoConcierto implements CreacionEvento {
     EventoUtils eventoUtils = new EventoUtils();
     @Override
-    public Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
-        return eventoUtils.crearEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, localidades, "CON");
+    public Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+        return eventoUtils.crearEvento(nombre, ciudad, descripcion, tipoEvento, fecha, localidades, "CON", direccion);
     }
 }

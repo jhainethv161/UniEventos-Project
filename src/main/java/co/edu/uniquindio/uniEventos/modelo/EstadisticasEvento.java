@@ -10,6 +10,6 @@ import java.util.HashMap;
 @Setter
 @NoArgsConstructor
 public class EstadisticasEvento {
-    private HashMap<String, Float> ventasPorLocalidad;
+    private HashMap<String, Float> ventasPorLocalidad = new HashMap<>();
     private double totalGanadoPorVentas;
 }

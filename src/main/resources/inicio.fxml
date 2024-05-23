@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.InicioController">
+   <children>
+      <HBox alignment="CENTER" prefHeight="52.0" prefWidth="600.0" style="-fx-spacing: 20;">
+         <children>
+            <Label prefHeight="18.0" prefWidth="54.0" text="Nombre: " />
+            <TextField fx:id="nombreEvento" prefHeight="26.0" prefWidth="113.0" />
+            <Label text="Tipo: " />
+            <ComboBox fx:id="tipoEvento" prefHeight="26.0" prefWidth="129.0" />
+            <Label text="Ciudad: " />
+            <TextField fx:id="ciudadEvento" />
+            <Button mnemonicParsing="false" onAction="#filtrarEventos" text="Buscar evento" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 50;">
+         <children>
+            <Button fx:id="btnIniciarSesion" mnemonicParsing="false" onAction="#iniciarSesion" text="Iniciar sesión " />
+            <Button fx:id="btnRegistrarme" mnemonicParsing="false" onAction="#registro" text="Registrarme" />
+         </children>
+      </HBox>
+      <TableView fx:id="tablaFiltro" prefHeight="227.0" prefWidth="892.0">
+         <columns>
+            <TableColumn fx:id="nombreColumn" prefWidth="128.6" text="Nombre" />
+            <TableColumn fx:id="direccionColumn" prefWidth="117.4" text="Direccion" />
+            <TableColumn fx:id="ciudadColumn" prefWidth="132.0" text="Ciudad" />
+            <TableColumn fx:id="codigoColumn" prefWidth="305.6" text="Codigo" />
+            <TableColumn fx:id="imagenColumn" prefWidth="88.4" text="Imagen" />
+            <TableColumn fx:id="fechaColumn" prefWidth="128.4" text="Fecha" />
+         </columns>
+      </TableView>
+   </children>
+</VBox>

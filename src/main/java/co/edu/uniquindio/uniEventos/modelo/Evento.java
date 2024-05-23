@@ -3,6 +3,7 @@ package co.edu.uniquindio.uniEventos.modelo;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import lombok.*;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class Evento {
     private String descripcion;
     private String codigo;
     private String direccion;
-    private String imagen;
+    private File imagen ;
     private TipoEvento tipoEvento;
     private LocalDate fecha;
     private ArrayList<Localidad> localidades;
@@ -32,7 +33,6 @@ public class Evento {
         sb.append(String.format("Descripción  : %s\n", descripcion));
         sb.append(String.format("Código       : %s\n", codigo));
         sb.append(String.format("Dirección    : %s\n", direccion));
-        sb.append(String.format("Imagen       : %s\n", imagen));
         sb.append(String.format("Tipo         : %s\n", tipoEvento));
         sb.append(String.format("Fecha        : %s\n", fecha));
         sb.append("Localidades  :\n");
