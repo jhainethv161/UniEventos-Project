@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -63,6 +64,8 @@
                            </children>
 
                         </HBox>
+                        <Button mnemonicParsing="false" onAction="#abrirFileChooser" text="Seleccionar imagen" />
+                        <ImageView fx:id="imagenSeleccionada" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                         <Button fx:id="btnCrearEvento" mnemonicParsing="false" onAction="#crearEvento" text="Crear evento" />
                      </children>
                   </VBox>

@@ -7,7 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class GestionarEventosController implements Observable {
@@ -66,6 +69,10 @@ public class GestionarEventosController implements Observable {
     private TextField txtCiudadFl;
     @FXML
     private ComboBox<TipoEvento> tipoEventoFl;
+
+    //FILE CHOOSER}
+    @FXML
+    private ImageView imagenSeleccionada;
 
 
 
@@ -159,5 +166,22 @@ public class GestionarEventosController implements Observable {
 
     public void  filtrarEventos(){
      //FALTA IMPLEMENTAR LA LOGICA DE COMUNICACION CON LA CLASE UNIEVENTOS A TRAVES DEL CONTROLADOR PRINCIPAL, EL METODO YA ESTA
+    }
+
+    public void abrirFileChooser() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar imagen");
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File imagen = fileChooser.showOpenDialog(null);
+
+        if (imagen != null) {
+            imagenSeleccionada.setImage(new javafx.scene.image.Image(imagen.toURI().toString()));
+        }
+
     }
 }
