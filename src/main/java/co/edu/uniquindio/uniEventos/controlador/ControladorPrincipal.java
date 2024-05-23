@@ -190,7 +190,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public EstadisticasEvento obtenerEstadisticasEvento(String eventoId) throws Exception {
-        return null;
+        return uniEventos.obtenerEstadisticasEvento(eventoId);
     }
 
     @Override

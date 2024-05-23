@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-spacing: 15;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.DatosEstadisticosController">
+   <children>
+      <Label text="Obtener estadisticas evento">
+         <font>
+            <Font size="30.0" />
+         </font></Label>
+      <Label text="Por favor ingrese el codigo del evento del cual quiere consultar las estadisticas:  " />
+      <HBox alignment="CENTER" prefHeight="36.0" prefWidth="600.0">
+         <children>
+            <TextField fx:id="txtCodigo" prefHeight="26.0" prefWidth="246.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <TableView fx:id="tablaEstadisticas" prefHeight="100.0" prefWidth="413.0">
+              <columns>
+                <TableColumn fx:id="localidad" prefWidth="201.8000030517578" text="Localidad" />
+                <TableColumn fx:id="porcentaje" prefWidth="210.99996948242188" text="Porcentaje vendido" />
+              </columns>
+            </TableView>
+         </children>
+      </HBox>
+      <Label fx:id="ganancias" text="Ganancias totales: " />
+      <Button mnemonicParsing="false" onAction="#consultarEstadisticas" text="Consultar" />
+   </children>
+</VBox>

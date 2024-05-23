@@ -19,6 +19,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#gestionarEventos" text="Gestionar eventos" />
             <Button mnemonicParsing="false" onAction="#crearCupon" text="Crear cupon " />
+            <Button mnemonicParsing="false" onAction="#datosEstadisticos" text="Obtener datos estadisticos" />
          </children>
       </HBox>
    </children>

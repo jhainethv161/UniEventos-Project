@@ -14,4 +14,8 @@ public class PanelAdminController {
         controladorPrincipal.navegarVentana("/crearCupon.fxml", "Creacion de cupones");
 
     }
+
+    public void datosEstadisticos(){
+        controladorPrincipal.navegarVentana("/datosEstadisticos.fxml", "Datos estadisticos");
+    }
 }
