@@ -1,9 +1,12 @@
 package co.edu.uniquindio.uniEventos.controlador;
 
 import co.edu.uniquindio.uniEventos.controlador.observador.Observable;
+import co.edu.uniquindio.uniEventos.modelo.Evento;
+import co.edu.uniquindio.uniEventos.modelo.ImageTableCell;
 import co.edu.uniquindio.uniEventos.modelo.Localidad;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -12,6 +15,8 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestionarEventosController implements Observable {
     private final ControladorPrincipal controladorPrincipal;
@@ -22,8 +27,6 @@ public class GestionarEventosController implements Observable {
     private TextField txtCiudad;
     @FXML
     private TextField txtDescripcion;
-    @FXML
-    private TextField txtImagen;
     @FXML
     private TextField txtDireccion;
     @FXML
@@ -69,14 +72,32 @@ public class GestionarEventosController implements Observable {
     private TextField txtCiudadFl;
     @FXML
     private ComboBox<TipoEvento> tipoEventoFl;
+    @FXML
+    private TableView<Evento> tablaEventos;
+    @FXML
+    private TableColumn<Evento, String> colNombre;
+    @FXML
+    private TableColumn<Evento, String> colCiudad;
+    @FXML
+    private TableColumn<Evento, String> colDescripcion;
+    @FXML
+    private TableColumn<Evento, TipoEvento> colTipoEvento;
+    @FXML
+    private TableColumn<Evento, String> colFecha;
+    @FXML
+    private TableColumn<Evento, String> colDireccion;
+    @FXML
+    private TableColumn<Evento, File> colImagen;
 
-    //FILE CHOOSER}
+
+    //FILE CHOOSER
     @FXML
     private ImageView imagenSeleccionada;
+    private File imagen;
 
+    private ObservableList<Evento> eventos;
 
-
-    public GestionarEventosController(){
+    public GestionarEventosController() {
         controladorPrincipal = ControladorPrincipal.getInstancia();
         localidades = controladorPrincipal.getLocalidadesEvento();
     }
@@ -95,25 +116,29 @@ public class GestionarEventosController implements Observable {
         }
     }
 
-
-    public void crearEvento(){
+    public void crearEvento() {
         try {
-            controladorPrincipal.crearEvento(txtNombre.getText(), txtCiudad.getText(), txtDescripcion.getText(), tipoEvento.getValue(), txtImagen.getText(), fecha.getValue(), txtDireccion.getText(), localidades);
+            if (imagen == null) {
+                throw new Exception("Debe seleccionar una imagen para el evento.");
+            }
+            Evento evento = controladorPrincipal.crearEvento(txtNombre.getText(), txtCiudad.getText(), txtDescripcion.getText(), tipoEvento.getValue(), fecha.getValue(), txtDireccion.getText(), localidades);
+            evento.setImagen(imagen);
+            System.out.println(evento);
+            System.out.println(evento.getImagen());
+
             controladorPrincipal.mostrarAlerta("Evento creado de manera exitosa", Alert.AlertType.INFORMATION);
             txtCiudad.clear();
             txtDescripcion.clear();
             txtDireccion.clear();
-            txtImagen.clear();
             txtNombre.clear();
             fecha.setValue(null);
             tipoEvento.setValue(null);
             controladorPrincipal.getLocalidadesEvento().clear();
             notificar();
-        }catch (Exception e){
+        } catch (Exception e) {
             controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
 
     @Override
     public void notificar() {
@@ -121,12 +146,12 @@ public class GestionarEventosController implements Observable {
         consultarLocalidades();
     }
 
-    private void consultarLocalidades(){
-        tablaLocalidades.setItems( FXCollections.observableArrayList(localidades) );
+    private void consultarLocalidades() {
+        tablaLocalidades.setItems(FXCollections.observableArrayList(localidades));
     }
 
     public void initialize() {
-        // Inicializa las columnas de la tabla
+        // Inicializa las columnas de la tabla de localidades
         nombre.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNombre()));
         capacidad.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getCapacidadMaxima()));
         precio.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getPrecio()));
@@ -134,11 +159,24 @@ public class GestionarEventosController implements Observable {
         tipoEvento.setItems(FXCollections.observableArrayList(TipoEvento.values()));
         tipoEventoAc.setItems(FXCollections.observableArrayList(TipoEvento.values()));
         tipoEventoFl.setItems(FXCollections.observableArrayList(TipoEvento.values()));
+
+        // Inicializa las columnas de la tabla de eventos
+        colImagen.setCellFactory(col -> new ImageTableCell());
+        colNombre.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNombre()));
+        colCiudad.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCiudad()));
+        colDescripcion.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDescripcion()));
+        colTipoEvento.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getTipoEvento()));
+        colFecha.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFecha().toString()));
+        colDireccion.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDireccion()));
+        colImagen.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getImagen()));
+
+        // Inicializa la tabla de eventos con todos los eventos
+        tablaEventos.setItems(eventos);
     }
 
-    public void actualizarEvento(){
+    public void actualizarEvento() {
         try {
-            controladorPrincipal.modificarEvento(txtCodigo.getText(), txtNombreAc.getText(), txtCiudadAc.getText(), txtDescripcionAc.getText(), tipoEventoAc.getValue(),txtImagenAc.getText(), fechaAc.getValue(), txtDireccionAc.getText());
+            controladorPrincipal.modificarEvento(txtCodigo.getText(), txtNombreAc.getText(), txtCiudadAc.getText(), txtDescripcionAc.getText(), tipoEventoAc.getValue(), txtImagenAc.getText(), fechaAc.getValue(), txtDireccionAc.getText());
             controladorPrincipal.mostrarAlerta("Evento actualizado de manera exitosa", Alert.AlertType.INFORMATION);
             txtCiudadAc.clear();
             txtDescripcionAc.clear();
@@ -148,28 +186,38 @@ public class GestionarEventosController implements Observable {
             fechaAc.setValue(null);
             tipoEventoAc.setValue(null);
             txtCodigo.clear();
-        }catch (Exception e){
+        } catch (Exception e) {
             controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    public  void eliminarEvento(){
+    public void eliminarEvento() {
         try {
             controladorPrincipal.eliminarEvento(txtCodigoEl.getText());
             controladorPrincipal.mostrarAlerta("EVENTO ELIMINADO CON EXITO", Alert.AlertType.INFORMATION);
             txtCodigoEl.clear();
-        }catch (Exception e){
+        } catch (Exception e) {
             controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
+    public void filtrarEventos() {
+        String nombreFiltro = txtNombreFl.getText().toLowerCase();
+        String ciudadFiltro = txtCiudadFl.getText().toLowerCase();
+        TipoEvento tipoFiltro = tipoEventoFl.getValue();
+        List<Evento> eventosFiltrados = null;
+        try {
+            eventosFiltrados = controladorPrincipal.filtrarEventos(nombreFiltro, tipoFiltro, ciudadFiltro);
+        }catch (Exception e){
+            controladorPrincipal.mostrarAlerta(e.getMessage(), Alert.AlertType.ERROR);
+        }
 
-    public void  filtrarEventos(){
-     //FALTA IMPLEMENTAR LA LOGICA DE COMUNICACION CON LA CLASE UNIEVENTOS A TRAVES DEL CONTROLADOR PRINCIPAL, EL METODO YA ESTA
+
+
+        tablaEventos.setItems(FXCollections.observableArrayList(eventosFiltrados));
     }
 
     public void abrirFileChooser() {
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar imagen");
 
@@ -177,11 +225,12 @@ public class GestionarEventosController implements Observable {
                 new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
         );
 
-        File imagen = fileChooser.showOpenDialog(null);
+        imagen = fileChooser.showOpenDialog(null);
+
+        System.out.println(imagen);
 
         if (imagen != null) {
             imagenSeleccionada.setImage(new javafx.scene.image.Image(imagen.toURI().toString()));
         }
-
     }
 }

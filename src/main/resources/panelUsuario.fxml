@@ -3,34 +3,38 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="771.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.PanelUsuarioController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="910.0" style="-fx-spacing: 20;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.uniEventos.controlador.PanelUsuarioController">
    <children>
       <HBox alignment="CENTER" prefHeight="52.0" prefWidth="600.0" style="-fx-spacing: 20;">
          <children>
             <Label prefHeight="18.0" prefWidth="54.0" text="Nombre: " />
-            <TextField prefHeight="26.0" prefWidth="113.0" />
+            <TextField fx:id="nombreEvento" prefHeight="26.0" prefWidth="113.0" />
             <Label text="Tipo: " />
             <ComboBox fx:id="tipoEvento" prefHeight="26.0" prefWidth="129.0" />
             <Label text="Ciudad: " />
-            <TextField />
-            <Button mnemonicParsing="false" text="Buscar evento" />
+            <TextField fx:id="ciudadEvento" />
+            <Button mnemonicParsing="false" onAction="#filtrarEventos" text="Buscar evento" />
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 20;">
+      <HBox alignment="CENTER" prefHeight="71.0" prefWidth="802.0" style="-fx-spacing: 20;">
          <children>
-            <Button mnemonicParsing="false" text="Realizar compra" onAction="#realizarCompra"/>
-            <Button mnemonicParsing="false" text="Cancelar compra" onAction="#cancelearCompra"/>
-            <Button mnemonicParsing="false" text="Listar compras" />
+            <Button mnemonicParsing="false" onAction="#realizarCompra" text="Realizar compra" />
+            <Button mnemonicParsing="false" onAction="#cancelearCompra" text="Cancelar compra" />
          </children>
       </HBox>
-      <HBox alignment="BOTTOM_RIGHT" prefHeight="27.0" prefWidth="771.0" style="-fx-spacing: 30.0;">
+      <HBox alignment="CENTER" prefHeight="227.0" prefWidth="771.0">
          <children>
-            <VBox prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <Button mnemonicParsing="false" text="Cerrar sesion" onAction="#cerrarSesion"/>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
+            <TableView fx:id="tablaFiltro" prefHeight="227.0" prefWidth="892.0">
+              <columns>
+                <TableColumn fx:id="nombreColumn" prefWidth="128.59999084472656" text="Nombre" />
+                <TableColumn fx:id="direccionColumn" prefWidth="117.39999389648438" text="Direccion" />
+                  <TableColumn fx:id="ciudadColumn" minWidth="0.20001220703125" prefWidth="132.00001525878906" text="Ciudad" />
+                  <TableColumn fx:id="codigoColumn" prefWidth="305.5999755859375" text="Codigo" />
+                  <TableColumn fx:id="imagenColumn" prefWidth="88.39996337890625" text="Imagen" />
+                  <TableColumn fx:id="fechaColumn" minWidth="0.20001220703125" prefWidth="128.39996337890625" text="Fecha" />
+              </columns>
+            </TableView>
+         </children></HBox>
+      <Button mnemonicParsing="false" onAction="#cerrarSesion" text="Cerrar sesion" />
    </children>
 </VBox>

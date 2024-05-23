@@ -8,6 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface CreacionEvento {
-    Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
+    Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
 
 }

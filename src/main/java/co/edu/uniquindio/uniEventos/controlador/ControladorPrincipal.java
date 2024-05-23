@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +115,8 @@ public class ControladorPrincipal implements UniEventosServicio {
     }
 
     @Override
-    public boolean crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
-        return uniEventos.crearEvento(nombre, ciudad, descripcion, tipoEvento, imagen, fecha, direccion, localidades);
+    public Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+        return uniEventos.crearEvento(nombre, ciudad, descripcion, tipoEvento, fecha, direccion, localidades);
     }
 
     @Override
@@ -135,7 +136,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public List<Evento> filtrarEventos(String nombre, TipoEvento tipoEvento, String ciudad) throws Exception {
-        return null;
+        return uniEventos.filtrarEventos(nombre, tipoEvento, ciudad);
     }
 
     @Override
@@ -180,7 +181,7 @@ public class ControladorPrincipal implements UniEventosServicio {
 
     @Override
     public ArrayList<Compra> listarComprasPorUsuario(String email) throws Exception {
-        return null;
+        return uniEventos.listarComprasPorUsuario(email);
     }
 
     @Override
@@ -204,7 +205,7 @@ public class ControladorPrincipal implements UniEventosServicio {
     }
 
     @Override
-    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
+    public void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception {
 
     }
 

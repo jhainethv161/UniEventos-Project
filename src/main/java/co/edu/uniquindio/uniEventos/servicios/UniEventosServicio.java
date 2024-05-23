@@ -3,6 +3,7 @@ package co.edu.uniquindio.uniEventos.servicios;
 import co.edu.uniquindio.uniEventos.modelo.*;
 import co.edu.uniquindio.uniEventos.modelo.enums.TipoEvento;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface UniEventosServicio {
 
 
     // Métodos de gestión de eventos
-    boolean crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
+    Evento crearEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
 
     boolean modificarEvento(String eventoId, String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion) throws Exception;
 
@@ -60,7 +61,7 @@ public interface UniEventosServicio {
     void validarString(String string, String mensaje) throws Exception;
 
     void validarDatosRegistro(String cedula, String nombreCompleto, String telefono, String email, String contrasena) throws Exception;
-    void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, String imagen, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
+    void validarDatosEvento(String nombre, String ciudad, String descripcion, TipoEvento tipoEvento, LocalDate fecha, String direccion, ArrayList<Localidad> localidades) throws Exception;
     void validarDatosCupon(double porcentajeDescuento, LocalDate fechaInicio, LocalDate fechaFin) throws Exception;
     void validarDatosCompra(String emailUsuario, String codigoEvento, String nombreLocalidad, int cantidadPersonas) throws Exception;
 
